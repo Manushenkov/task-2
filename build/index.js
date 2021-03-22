@@ -217,7 +217,7 @@ function prepareData(rawData, sprintObj) {
 	}
 
 	// добавление users, копирование из leaders
-	chart.data.users = leaders.data.users;
+	chart.data.users = leaders.data.users.slice();
 
 
 	// Начало зоны 4 подзадания
