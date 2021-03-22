@@ -481,11 +481,27 @@ function prepareData(rawData, sprintObj) {
 	    }
 	  }
 	}
-	if (diagram.data.categories == undefined) {
-    		diagram.data.categories = []
-	};
+// 	if (diagram.data.categories == undefined) {
+//     		diagram.data.categories = []
+// 	};
 	
-	return [leaders, vote, chart, diagram, activity]
+	let di = {
+    "alias": "diagram",
+    "data": {
+      "title": "Размер коммитов",
+      "subtitle": "Последний вагон",
+      "totalText": "104 коммита",
+      "differenceText": "-106 с прошлого спринта",
+      "categories": [
+        {"title": "> 1001 строки", "valueText": "2 коммита", "differenceText": "-3 коммита"},
+        {"title": "501 — 1000 строк", "valueText": "3 коммита", "differenceText": "-3 коммита"},
+        {"title": "101 — 500 строк", "valueText": "13 коммитов", "differenceText": "-22 коммита"},
+        {"title": "1 — 100 строк", "valueText": "86 коммитов", "differenceText": "-78 коммитов"}
+      ]
+    }
+	
+	
+	return [leaders, vote, chart, di, activity]
 };
 
 module.exports = { prepareData };
