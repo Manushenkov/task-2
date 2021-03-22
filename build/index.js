@@ -68,17 +68,12 @@ function prepareData(rawData, sprintObj) {
 
 	// Сборка vote. Добавление пользователей и их valueText 
 	users.forEach(user => {
-		vote.data.users.push({"id": user.id, "name": user.name, "avatar": user.avatar, "valueText": voteStatistics[user.id]})
+		vote.data.users.push({"id": user.id, "name": user.name, "avatar": user.avatar, "valueText": voteStatistics[user.id].toString()})
 	});
 
 	vote.data.users.sort((userA, userB) =>{
 		return userB.valueText - userA.valueText;
 	});
-    
-	vote.data.users.forEach(user => {
-		user.valueText += " голосов"
-	});
-
 
 	// каркас leaders
 	const leaders = {
