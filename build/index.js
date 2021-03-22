@@ -115,28 +115,18 @@ function prepareData(rawData, sprintObj) {
 		}
 	});
 
-
-	// Перенос пользователей в leaders по уменшению valueText
-
 	// Сортировка users по id, чтобы индекс в users соотносился с индексом в leadersStatistics
-	
-	// Перенос пользователей в leaders по уменшению valueText
-
-	// добавлене юзерам количества лайков в likes 
-	users.forEach(user => {
-		user.likes = leadersStatistics[user.id]
+	users.sort((userA, userB) =>{
+		return userA.id - userB.id
 	})
-	// сортировка по лайкам
-	users.sort((userA, userB) => {
-		return userB.likes - userA.likes
-	})
-
-	// сбор users 
 	for (let i = 0; i < users.length; ++i){
-		let userToAdd = {"id": users[i].id, "name": users[i].name, "avatar": users[i].avatar, "valueText": users[i].likes.toString()};
+		let maxValue = Math.max(...leadersStatistics);
+		let userId = leadersStatistics.indexOf(maxValue);
+		let userToAdd = {"id": users[userId - 1].id, "name": users[userId - 1].name, "avatar": users[userId - 1].avatar, "valueText": maxValue.toString()};
 		leaders.data.users.push(userToAdd);
-	}
-
+		leadersStatistics[userId] = -1;
+	};
+		
 	// каркас chart
 	const chart = {
 		"alias": "chart",
