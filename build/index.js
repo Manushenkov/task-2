@@ -1,14 +1,14 @@
 function prepareData(rawData, sprintObj) {
 	// Присвоение id константе
-	const sprintId = sprintObj['sprintId']
+	const sprintId = sprintObj['sprintId'];
 
 	// Сортировка данных в массивы по типу
-	const processedData = []
-	const commits = []
-	const comments = []
-	const summary = []
-	const users = []
-	const sprints = []
+	const processedData = [];
+	const commits = [];
+	const comments = [];
+	const summary = [];
+	const users = [];
+	const sprints = [];
 	rawData.forEach(element =>{
 		if (element.type == 'Comment'){
 			comments.push(element)
@@ -52,32 +52,32 @@ function prepareData(rawData, sprintObj) {
 			"emoji": "🔎",
 			"users": []
 		}
-	}
+	};
 
 	// Создание массива и присвоение ему valueText для vote путём перебора массива с комментами и проверок времени
 	let voteStatistics = [];
 	for (let i = 0; i < users.length + 1; ++i){
-		voteStatistics.push(0);
+		voteStatistics.push(0)
 	};
 
 	comments.forEach(comment =>{
 		if (comment.createdAt >= currentSprintStart && comment.createdAt <= currentSprintFinish) {
-			voteStatistics[comment.author] += comment.likes.length;
+			voteStatistics[comment.author] += comment.likes.length
 		}
 	});
 
 	// Сборка vote. Добавление пользователей и их valueText 
 	users.forEach(user => {
 		vote.data.users.push({"id": user.id, "name": user.name, "avatar": user.avatar, "valueText": voteStatistics[user.id]})
-	})
+	});
 
 	vote.data.users.sort((userA, userB) =>{
 		return userB.valueText - userA.valueText;
-	})
+	});
     
 	vote.data.users.forEach(user => {
 		user.valueText += " голосов"
-	})
+	});
 
 
 	// каркас leaders
@@ -89,12 +89,12 @@ function prepareData(rawData, sprintObj) {
 		"emoji": "👑",
 		"users": []
 	  }
-	}
+	};
 
 	// Создание массива и присвоение ему valueText для leaders путём перебора массива с коммитами и проверок времени
 	let leadersStatistics = [-1];
 	for (let i = 0; i < users.length; ++i){
-		leadersStatistics.push(0);
+		leadersStatistics.push(0)
 	};
 
 	commits.forEach(commit =>{
@@ -108,7 +108,7 @@ function prepareData(rawData, sprintObj) {
 
 	// Сортировка users по id, чтобы индекс в users соотносился с индексом в leadersStatistics
 	users.sort((userA, userB) =>{
-		return userA.id - userB.id;
+		return userA.id - userB.id
 	})
 	for (let i = 0; i < users.length; ++i){
 		let maxValue = Math.max(...leadersStatistics);
@@ -116,7 +116,7 @@ function prepareData(rawData, sprintObj) {
 		let userToAdd = {"id": users[userId - 1].id, "name": users[userId - 1].name, "avatar": users[userId - 1].avatar, "valueText": maxValue.toString()};
 		leaders.data.users.push(userToAdd);
 		leadersStatistics[userId] = -1;
-	}
+	};
 
 	// каркас chart
 	const chart = {
@@ -132,44 +132,43 @@ function prepareData(rawData, sprintObj) {
 
 	// Создание commits в sprints для количесва коммитов
 	for (sprint in sprints){
-		sprints[sprint].commits = 0
+		sprints[sprint].commits = 0;
 		// создание эл-тов содержащих данные для diagram
 		if (sprint == currentSprintIndex || sprint == currentSprintIndex - 1){
 
-			sprints[sprint].tinyCommits = 0
-			sprints[sprint].smallCommits = 0
-			sprints[sprint].bigCommits = 0
-			sprints[sprint].hugeCommits = 0
+			sprints[sprint].tinyCommits = 0;
+			sprints[sprint].smallCommits = 0;
+			sprints[sprint].bigCommits = 0;
+			sprints[sprint].hugeCommits = 0;
 
-			//without sort
-			sprints[sprint].firstSummary = Number.POSITIVE_INFINITY 
-			sprints[sprint].lastSummary = Number.NEGATIVE_INFINITY
+			// бесконечности необходимы для установки границ текущего и предыдущего спритов
+			sprints[sprint].firstSummary = Number.POSITIVE_INFINITY;
+			sprints[sprint].lastSummary = Number.NEGATIVE_INFINITY;
 		} 
 	}
 
 	// объекты для коммитов текущего и предыдущего спринтов. Необходимы для diagram и activity
-	let currentSprintCommits = []
-	let previousSprintCommits = []
+	let currentSprintCommits = [];
+	let previousSprintCommits = [];
 
 
 
   // Функция бинарного поиска, ищущая к какому спринту относится коммит, немного быстрее 
   // простого перебора, будет намного быстрее при большем кольичесте спринтов
 	let binarySearch = (commit) =>{
-		let left = 0
-		let right = sprints.length - 1
-		let middle = Math.floor((left + right) / 2)
+		let left = 0;
+		let right = sprints.length - 1;
+		let middle = Math.floor((left + right) / 2);
 		while (left != right) {
 			if (commit.timestamp < sprints[middle].startAt) { //если время меньше меньшей границы
 				right = middle;
-				middle = Math.floor((left + right) / 2)
+				middle = Math.floor((left + right) / 2);
 			} else if (commit.timestamp > sprints[middle].finishAt) { //если время больше большей
-				left = middle
-				middle = Math.floor((left + right) / 2)
+				left = middle;
+				middle = Math.floor((left + right) / 2);
 			} else {
 
 				// передача в текущий и предыдущий спринт данных для diagram
-				// without sorting
 				// передача в спринт id крайних summary 
 				// вынесение коммитов текущего и предыдущего спритнов в отдельные массивы
 				if (middle == currentSprintIndex) {
@@ -181,7 +180,7 @@ function prepareData(rawData, sprintObj) {
 						sprints[currentSprintIndex].firstSummary = commit.summaries[0]
 					}
 				} else if (middle == currentSprintIndex - 1) { 
-						previousSprintCommits.push(commit) //вынесение
+						previousSprintCommits.push(commit); //вынесение
 						if (commit.summaries[commit.summaries.length - 1] >= sprints[currentSprintIndex - 1].lastSummary){
 							sprints[currentSprintIndex - 1].lastSummary = commit.summaries[commit.summaries.length - 1]
 						}
@@ -202,17 +201,17 @@ function prepareData(rawData, sprintObj) {
 				return sprint.Id
 			}
 		})
-	}
+	};
 
 	// подсчёт количества коммитов в каждом спринте
 	commits.forEach(commit =>{
 		sprints[binarySearch(commit)].commits += 1
-	})
+	});
 
 	// сбор values в chart
 	sprints.forEach(sprint =>{
-		chart.data.values.push({"title": sprint.id.toString(), "value": sprint.commits})
-	})
+		chart.data.values.push({"title": sprint.id.toString(), "hint": sprint.name, "value": sprint.commits})
+	});
 
   // добавление "actuve": true
 	for (element in chart.data.values){
@@ -223,22 +222,20 @@ function prepareData(rawData, sprintObj) {
 	}
 
 	// добавление users, копирование из leaders
-	for (let i = 0; i < 3; i++){
-		chart.data.users[i] = leaders.data.users[i]
-	}
+	chart.data.users[i] = leaders.data.users[i];
 
-	// зона 4 подзадания
+
+	// Начало зоны 4 подзадания
 	
-
 	// добавление счётчиков коммитов для текущего и предыдущего спринтов
-	sprints[currentSprintIndex].tinyCommits = 0
-	sprints[currentSprintIndex].smallCommits = 0
-	sprints[currentSprintIndex].bigCommits = 0
-	sprints[currentSprintIndex].hugeCommits = 0
-	sprints[currentSprintIndex - 1].tinyCommits = 0
-	sprints[currentSprintIndex - 1].smallCommits = 0
-	sprints[currentSprintIndex - 1].bigCommits = 0
-	sprints[currentSprintIndex - 1].hugeCommits = 0
+	sprints[currentSprintIndex].tinyCommits = 0;
+	sprints[currentSprintIndex].smallCommits = 0;
+	sprints[currentSprintIndex].bigCommits = 0;
+	sprints[currentSprintIndex].hugeCommits = 0;
+	sprints[currentSprintIndex - 1].tinyCommits = 0;
+	sprints[currentSprintIndex - 1].smallCommits = 0;
+	sprints[currentSprintIndex - 1].bigCommits = 0;
+	sprints[currentSprintIndex - 1].hugeCommits = 0;
 
 
 	// сортировка массивов текущих и предыдущих коммитов
@@ -409,10 +406,6 @@ function prepareData(rawData, sprintObj) {
 	// определение differenceNumber
 	const differenceNumber = sprints[currentSprintIndex].commits - sprints[previousSprintIndex].commits
   
-
-
-
-
 	// слово в totalText может быть неправильным, так как
 	// с разными числительными мы используем разные падежные формы
 	// i.e 30 коммитов, 51 коммит, 102 коммита
@@ -421,7 +414,7 @@ function prepareData(rawData, sprintObj) {
 	  "data": {
 	    "title": "Размер коммитов",
 	    "subtitle": sprints[currentSprintIndex].name,
-	    "totalText": `${sprints[currentSprintIndex].commits} коммитов`,
+	    "totalText": `${sprints[currentSprintIndex].commits} коммита`,
 	    "differenceText": `${getSign(differenceNumber)} с прошлого спринта`,
 	    "categories": [
 	      {
@@ -445,11 +438,8 @@ function prepareData(rawData, sprintObj) {
 	    ]
 		}}
 
-
-
 	// не знаю, почему новые спринты начинаются в воскресенье в 0:05:02, 
 	// получается, что последний столбец sum на самом деле - первый день спринта, а первый столбец - второй день
-
 
 	const activityStat = []
 		for (let i = 0; i < 7; ++i) {
@@ -485,7 +475,7 @@ function prepareData(rawData, sprintObj) {
 	return [vote, leaders, chart, diagram, activity]
 };
 
-module.exports = { prepareData }
+module.exports = { prepareData };
 
 
 
