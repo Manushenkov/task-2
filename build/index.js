@@ -85,7 +85,7 @@ function prepareData(rawData, sprintObj) {
 	"alias": "leaders",
 	"data": {
 		"title": "Больше всего коммитов",
-		"subtitle": `Спринт № ${sprintId}`,
+		"subtitle": `${sprintId}`,
 		"emoji": "👑",
 		"users": []
 	  }
