@@ -481,8 +481,8 @@ function prepareData(rawData, sprintObj) {
 	    }
 	  }
 	}
-	
-	return [leaders, vote, chart, diagram, activity]
+	finalArray = [leaders, vote, chart, diagram, activity]; 
+	return finalArray
 };
 
 module.exports = { prepareData };
