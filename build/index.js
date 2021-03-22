@@ -48,7 +48,7 @@ function prepareData(rawData, sprintObj) {
 		"alias": "vote",
 		"data": {
 			"title": "Самый 🔎 внимательный разработчик",
-			"subtitle": `Спринт № ${sprintId}`,
+			"subtitle": sprints[currentSprintIndex].name,
 			"emoji": "🔎",
 			"users": []
 		}
@@ -85,7 +85,7 @@ function prepareData(rawData, sprintObj) {
 	"alias": "leaders",
 	"data": {
 		"title": "Больше всего коммитов",
-		"subtitle": `${sprintId}`,
+		"subtitle": sprints[currentSprintIndex].name,
 		"emoji": "👑",
 		"users": []
 	  }
@@ -104,13 +104,13 @@ function prepareData(rawData, sprintObj) {
 	});
 
 
-	// Перенос пользователей с наибольшим valueText в объект leaders  
+	// Перенос пользователей в leaders по уменшению valueText
 
 	// Сортировка users по id, чтобы индекс в users соотносился с индексом в leadersStatistics
 	users.sort((userA, userB) =>{
 		return userA.id - userB.id;
 	})
-	for (let i = 0; i < 5; ++i){
+	for (let i = 0; i < users.length; ++i){
 		let maxValue = Math.max(...leadersStatistics);
 		let userId = leadersStatistics.indexOf(maxValue);
 		let userToAdd = {"id": users[userId - 1].id, "name": users[userId - 1].name, "avatar": users[userId - 1].avatar, "valueText": maxValue.toString()};
@@ -123,7 +123,7 @@ function prepareData(rawData, sprintObj) {
 		"alias": "chart",
 		"data": {
 			"title": "Коммиты",
-			"subtitle": `Спринт № ${sprintId}`,
+			"subtitle": sprints[currentSprintIndex].name,
 			"values": [],
 		"users": []
 		}
@@ -420,7 +420,7 @@ function prepareData(rawData, sprintObj) {
 	  "alias": "diagram",
 	  "data": {
 	    "title": "Размер коммитов",
-	    "subtitle": `Спринт № ${sprintId}`,
+	    "subtitle": sprints[currentSprintIndex].name,
 	    "totalText": `${sprints[currentSprintIndex].commits} коммитов`,
 	    "differenceText": `${getSign(differenceNumber)} с прошлого спринта`,
 	    "categories": [
@@ -470,7 +470,7 @@ function prepareData(rawData, sprintObj) {
 	  "alias": "activity",
 	  "data": {
 	    "title": `Коммиты, ${+currentSprintIndex + 1} неделя`,
-	    "subtitle": `Спринт № ${sprintId}`,
+	    "subtitle": sprints[currentSprintIndex].name,
 	    "data": {
 	      "mon": activityStat[1],
 	      "tue": activityStat[2],
