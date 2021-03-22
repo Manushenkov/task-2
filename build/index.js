@@ -481,6 +481,10 @@ function prepareData(rawData, sprintObj) {
 	    }
 	  }
 	}
+	if (diagram.data.categories == undefined) {
+    		diagram.data.categories = []
+	};
+	
 	return [leaders, vote, chart, diagram, activity]
 };
 
