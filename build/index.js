@@ -67,7 +67,7 @@ function prepareData(rawData, sprintObj) {
 
 	// Сборка vote. Добавление пользователей и их valueText 
 	users.forEach(user => {
-		vote.data.users.push({"id": user.id, "name": user.name, "avatar": user.avatar, "valueText": voteStatistics[user.id].toString()})
+		vote.data.users.push({"id": user.id, "name": user.name, "avatar": user.avatar, "valueText": voteStatistics[user.id] != undefined ? voteStatistics[user.id].toString() : ""})
 	});
 
 	vote.data.users.sort((userA, userB) =>{
@@ -121,11 +121,11 @@ function prepareData(rawData, sprintObj) {
 	for (let i = 0; i < users.length; ++i){
 		let maxValue = Math.max(...leadersStatistics);
 		let userId = leadersStatistics.indexOf(maxValue);
-		let userToAdd = {"id": users[userId - 1].id, "name": users[userId - 1].name, "avatar": users[userId - 1].avatar, "valueText": maxValue.toString()};
+		let userToAdd = {"id": users[userId - 1].id, "name": users[userId - 1].name, "avatar": users[userId - 1].avatar, "valueText": maxValue != undefined ? maxValue.toString() : ""};
 		leaders.data.users.push(userToAdd);
 		leadersStatistics[userId] = -1;
 	};
-		
+
 	// каркас chart
 	const chart = {
 		"alias": "chart",
