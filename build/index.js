@@ -3,7 +3,6 @@ function prepareData(rawData, sprintObj) {
 	const sprintId = sprintObj['sprintId'];
 
 	// Сортировка данных в массивы по типу
-	const processedData = [];
 	const commits = [];
 	const comments = [];
 	const summary = [];
