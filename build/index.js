@@ -1,4 +1,5 @@
 function prepareData(rawData, sprintObj) {
+	try {
 	// Присвоение id константе
 	const sprintId = sprintObj['sprintId'];
 
@@ -479,6 +480,11 @@ function prepareData(rawData, sprintObj) {
 	}
 
 	return [leaders, vote, chart, diagram, activity]
+	} catch {
+		return []
+		console.log('failed')
+	}
+	
 };
 
 module.exports = { prepareData };
