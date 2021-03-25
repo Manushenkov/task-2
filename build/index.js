@@ -384,7 +384,7 @@ function prepareData(rawData, sprintObj) {
 			sprints[currentSprintIndex].bigCommits += 1
 		} else if (commit.commitSize > 100) {
 			sprints[currentSprintIndex].smallCommits += 1
-		} else if (commit.commitSize > 0 ) {
+		} else if (commit.commitSize > -1 ) {
 			sprints[currentSprintIndex].tinyCommits += 1
 		}
 	})
