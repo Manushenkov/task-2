@@ -1,5 +1,6 @@
 
 
+
 function prepareData(rawData, sprintObj) {
   try {
   // Присвоение id константе
@@ -162,7 +163,9 @@ function prepareData(rawData, sprintObj) {
     leaders.data.users.push(JSON.parse(JSON.stringify(userToAdd)));
     leadersStatistics[userId] = -1;
   };
-
+  leaders.data.users.forEach(user => {
+    user.valueText = user.valueText + declOfNum(+user.valueText, [" голос", " голоса", " голосов"])
+  })
   // каркас chart
   const chart = {
     "alias": "chart",
@@ -202,7 +205,7 @@ function prepareData(rawData, sprintObj) {
   // простого перебора, будет намного быстрее при большем количесте спринтов
   let binarySearch = (commit) =>{
     let left = -1;
-    let right = sprints.length+1;
+    let right = sprints.length + 1;
     let middle = Math.floor((left + right) / 2);
     let i = Math.ceil(Math.log2(sprints.length) + 2)
     while (i != 0) {
@@ -271,19 +274,6 @@ function prepareData(rawData, sprintObj) {
   commits.forEach(commit =>{
     sprints[binarySearch(commit)].commits += 1
   });
-
-/*
-  // подсчёт количества коммитов в каждом спринте
-  commits.forEach(commit =>{
-    // console.log(commit)
-    let sprintInd = search(commit) 
-    if (sprintInd != false){ 
-      console.log('suc')
-      sprints[sprintInd].commits += 1
-    }
-  });
-  // console.log(sprints)
-*/
 
   // сбор values в chart
   sprints.forEach(sprint =>{
@@ -515,7 +505,8 @@ function prepareData(rawData, sprintObj) {
             "differenceText": `${getSign(sprints[currentSprintIndex].tinyCommits - sprints[previousSprintIndex].tinyCommits)} ${declOfNum(sprints[currentSprintIndex].tinyCommits - sprints[previousSprintIndex].tinyCommits, ["коммит", "коммита", "коммитов"])}`}
         ]
       }}
-
+   console.log(JSON.parse(JSON.stringify(diagram)))
+   console.log(diagram)
   // не знаю, почему новые спринты начинаются в воскресенье в 0:05:02, 
   // получается, что последний столбец sum на самом деле - первый день спринта, а первый столбец - второй день
 
@@ -550,8 +541,7 @@ function prepareData(rawData, sprintObj) {
       }
     }
   }        
-
-  return [leaders, vote, chart, diagram, activity]; 
+  return JSON.parse(JSON.stringify([leaders, vote, chart, diagram, activity])); 
 
 } catch {
     console.log("failed")
@@ -559,8 +549,5 @@ function prepareData(rawData, sprintObj) {
   }
 
 };
-
-// module.exports = { prepareData };
-
 
 module.exports = { prepareData };
