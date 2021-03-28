@@ -1,4 +1,5 @@
 
+
 function prepareData(rawData, sprintObj) {
   try {
   // Присвоение id константе
@@ -158,7 +159,7 @@ function prepareData(rawData, sprintObj) {
     let maxValue = Math.max(...leadersStatistics);
     let userId = leadersStatistics.indexOf(maxValue);
     let userToAdd = {"id": users[userId - 1].id, "name": users[userId - 1].name, "avatar": users[userId - 1].avatar, "valueText": maxValue != undefined ? maxValue.toString() : ""};
-    leaders.data.users.push(userToAdd);
+    leaders.data.users.push(JSON.parse(JSON.stringify(userToAdd)));
     leadersStatistics[userId] = -1;
   };
 
@@ -298,8 +299,8 @@ function prepareData(rawData, sprintObj) {
   }
 
   // добавление users, копирование из leaders
-  chart.data.users = leaders.data.users.slice();
-
+  // chart.data.users = leaders.data.users.slice();
+  chart.data.users = JSON.parse(JSON.stringify(leaders.data.users));
 
   // Начало зоны 4 подзадания
   
@@ -480,6 +481,12 @@ function prepareData(rawData, sprintObj) {
 
   // определение differenceNumber
   const differenceNumber = sprints[currentSprintIndex].commits - sprints[previousSprintIndex].commits
+  // console.log(sprints[currentSprintIndex].commits)
+  // console.log(sprints[currentSprintIndex].hugeCommits +
+  //   sprints[currentSprintIndex].bigCommits +
+  //   sprints[currentSprintIndex].smallCommits +
+  //   sprints[currentSprintIndex].tinyCommits
+  //   )
   const diagram = {
       "alias": "diagram",
       "data": {
@@ -546,11 +553,14 @@ function prepareData(rawData, sprintObj) {
 
   return [leaders, vote, chart, diagram, activity]; 
 
-	} catch {
-	    console.log("failed")
-	    return []
-	}
+} catch {
+    console.log("failed")
+    return []
+  }
 
 };
+
+// module.exports = { prepareData };
+
 
 module.exports = { prepareData };
