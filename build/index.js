@@ -12,11 +12,6 @@ function prepareData(rawData, sprintObj) {
   const summary = [];
   const users = [];
   const sprints = [];
-  rawData.forEach(el =>{
-    if (el.type == 'User') {
-      console.log(el)
-    }
-  })
   rawData.forEach(element =>{
     if (element.type == 'Comment'){
       comments.push(element)
@@ -163,9 +158,7 @@ function prepareData(rawData, sprintObj) {
     leaders.data.users.push(JSON.parse(JSON.stringify(userToAdd)));
     leadersStatistics[userId] = -1;
   };
-  leaders.data.users.forEach(user => {
-    user.valueText = user.valueText + declOfNum(+user.valueText, [" голос", " голоса", " голосов"])
-  })
+
   // каркас chart
   const chart = {
     "alias": "chart",
@@ -484,7 +477,15 @@ function prepareData(rawData, sprintObj) {
         "subtitle": sprints[currentSprintIndex].name,
         "totalText": `${sprints[currentSprintIndex].commits} ${declOfNum(sprints[currentSprintIndex].commits, ["коммит", "коммита", "коммитов"])}`,
         "differenceText": `${getSign(differenceNumber)} с прошлого спринта`,
+        
         "categories": [
+        {"title": "> 1001 строки", "valueText": "2 коммита", "differenceText": "-3 коммита"},
+        {"title": "501 — 1000 строк", "valueText": "3 коммита", "differenceText": "-3 коммита"},
+        {"title": "101 — 500 строк", "valueText": "13 коммитов", "differenceText": "-22 коммита"},
+        {"title": "1 — 100 строк", "valueText": "86 коммитов", "differenceText": "-78 коммитов"}
+      ],
+
+        "categories2": [
           {
             "title": "> 1001 строки",
             "valueText": `${sprints[currentSprintIndex].hugeCommits} ${declOfNum(sprints[currentSprintIndex].hugeCommits, ["коммит", "коммита", "коммитов"])}`,
@@ -504,9 +505,9 @@ function prepareData(rawData, sprintObj) {
             "valueText": `${sprints[currentSprintIndex].tinyCommits} ${declOfNum(sprints[currentSprintIndex].tinyCommits, ["коммит", "коммита", "коммитов"])}`,
             "differenceText": `${getSign(sprints[currentSprintIndex].tinyCommits - sprints[previousSprintIndex].tinyCommits)} ${declOfNum(sprints[currentSprintIndex].tinyCommits - sprints[previousSprintIndex].tinyCommits, ["коммит", "коммита", "коммитов"])}`}
         ]
+
       }}
-   console.log(JSON.parse(JSON.stringify(diagram)))
-   console.log(diagram)
+
   // не знаю, почему новые спринты начинаются в воскресенье в 0:05:02, 
   // получается, что последний столбец sum на самом деле - первый день спринта, а первый столбец - второй день
 
