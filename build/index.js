@@ -1,6 +1,3 @@
-
-
-
 function prepareData(rawData, sprintObj) {
   try {
   // Присвоение id константе
@@ -109,15 +106,17 @@ function prepareData(rawData, sprintObj) {
     "users": []
     }
   };
-
   // Создание массива и присвоение ему valueText для leaders путём перебора массива с коммитами и проверок времени
-  let leadersStatistics = [-1];
+  let leadersStatistics = JSON.parse(JSON.stringify(users));
+  leadersStatistics.sort((a, b) => {
+    return a.id - b.id
+  })
   for (let i = 0; i < users.length; ++i){
-    leadersStatistics.push(0)
+    leadersStatistics[i].valueText = 0
   };
   commits.forEach(commit =>{
     if (commit.timestamp >= currentSprintStart && commit.timestamp <= currentSprintFinish) {
-      ++leadersStatistics[commit.author]
+      ++leadersStatistics[commit.author - 1].valueText
     }
   });
 
@@ -148,16 +147,31 @@ function prepareData(rawData, sprintObj) {
   // Перенос пользователей в leaders по уменшению valueText
 
   // Сортировка users по id, чтобы индекс в users соотносился с индексом в leadersStatistics
-  users.sort((userA, userB) =>{
-    return userA.id - userB.id
-  })
-  for (let i = 0; i < users.length; ++i){
-    let maxValue = Math.max(...leadersStatistics);
-    let userId = leadersStatistics.indexOf(maxValue);
-    let userToAdd = {"id": users[userId - 1].id, "name": users[userId - 1].name, "avatar": users[userId - 1].avatar, "valueText": maxValue != undefined ? maxValue.toString() : ""};
-    leaders.data.users.push(JSON.parse(JSON.stringify(userToAdd)));
-    leadersStatistics[userId] = -1;
-  };
+
+  // for (let i = 0; i < users.length; ++i){
+  //   let maxValue = Math.max(...leadersStatistics);
+  //   let userId = leadersStatistics.indexOf(maxValue);
+  //   let userToAdd = {"id": users[userId - 1].id, "name": users[userId - 1].name, "avatar": users[userId - 1].avatar, "valueText": maxValue != undefined ? maxValue.toString() : ""};
+  //   leaders.data.users.push(JSON.parse(JSON.stringify(userToAdd)));
+  //   leadersStatistics[userId] = -1;
+  // };
+
+    leaders.data.users = JSON.parse(JSON.stringify(leadersStatistics));
+    leaders.data.users.forEach(user => {
+      delete user.friends
+      delete user.comments
+      delete user.commits
+      delete user.login
+      delete user.type
+      user.valueText = user.valueText.toString()
+    })
+    leaders.data.users.sort((userA, userB) => {
+      if (userA.valueText - userB.valueText == 0 ) {
+        return userA.id - userB.id
+      } else {
+        return +userB.valueText - +userA.valueText
+      }
+    })
 
   // каркас chart
   const chart = {
@@ -477,13 +491,26 @@ function prepareData(rawData, sprintObj) {
         "subtitle": sprints[currentSprintIndex].name,
         "totalText": `${sprints[currentSprintIndex].commits} ${declOfNum(sprints[currentSprintIndex].commits, ["коммит", "коммита", "коммитов"])}`,
         "differenceText": `${getSign(differenceNumber)} с прошлого спринта`,
-        
         "categories": [
-        {"title": "> 1001 строки", "valueText": "2 коммита", "differenceText": "-3 коммита"},
-        {"title": "501 — 1000 строк", "valueText": "3 коммита", "differenceText": "-3 коммита"},
-        {"title": "101 — 500 строк", "valueText": "13 коммитов", "differenceText": "-22 коммита"},
-        {"title": "1 — 100 строк", "valueText": "86 коммитов", "differenceText": "-78 коммитов"}
-      ]
+          {
+            "title": "> 1001 строки",
+            "valueText": `${sprints[currentSprintIndex].hugeCommits} ${declOfNum(sprints[currentSprintIndex].hugeCommits, ["коммит", "коммита", "коммитов"])}`,
+              "differenceText": `${getSign(sprints[currentSprintIndex].hugeCommits - sprints[previousSprintIndex].hugeCommits)} ${declOfNum(sprints[currentSprintIndex].hugeCommits - sprints[previousSprintIndex].hugeCommits, ["коммит", "коммита", "коммитов"])}`
+        },
+          {
+            "title": "501 — 1000 строк", 
+            "valueText": `${sprints[currentSprintIndex].bigCommits} ${declOfNum(sprints[currentSprintIndex].bigCommits, ["коммит", "коммита", "коммитов"])}`,
+            "differenceText": `${getSign(sprints[currentSprintIndex].bigCommits - sprints[previousSprintIndex].bigCommits)} ${declOfNum(sprints[currentSprintIndex].bigCommits - sprints[previousSprintIndex].bigCommits, ["коммит", "коммита", "коммитов"])}`
+          },
+          {
+            "title": "101 — 500 строк",
+            "valueText": `${sprints[currentSprintIndex].smallCommits} ${declOfNum(sprints[currentSprintIndex].smallCommits, ["коммит", "коммита", "коммитов"])}`,
+            "differenceText": `${getSign(sprints[currentSprintIndex].smallCommits - sprints[previousSprintIndex].smallCommits)} ${declOfNum(sprints[currentSprintIndex].smallCommits - sprints[previousSprintIndex].smallCommits, ["коммит", "коммита", "коммитов"])}`},
+          {
+            "title": "1 — 100 строк",
+            "valueText": `${sprints[currentSprintIndex].tinyCommits} ${declOfNum(sprints[currentSprintIndex].tinyCommits, ["коммит", "коммита", "коммитов"])}`,
+            "differenceText": `${getSign(sprints[currentSprintIndex].tinyCommits - sprints[previousSprintIndex].tinyCommits)} ${declOfNum(sprints[currentSprintIndex].tinyCommits - sprints[previousSprintIndex].tinyCommits, ["коммит", "коммита", "коммитов"])}`}
+        ]
       }}
 
   // не знаю, почему новые спринты начинаются в воскресенье в 0:05:02, 
@@ -522,8 +549,8 @@ function prepareData(rawData, sprintObj) {
   }        
   return JSON.parse(JSON.stringify([leaders, vote, chart, diagram, activity])); 
 
-} catch {
-    console.log("failed")
+} catch(c) {
+    console.log(c)
     return []
   }
 
