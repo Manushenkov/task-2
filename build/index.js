@@ -144,87 +144,6 @@ function prepareData(rawData, sprintObj) {
 
   leaders.data.users = JSON.parse(JSON.stringify(leadersUsers))
 
-/*
-
-
-  // Создание массива и присвоение ему valueText для leaders путём перебора массива с коммитами и проверок времени
-  let leadersStatistics = JSON.parse(JSON.stringify(users));
-  leadersStatistics.sort((a, b) => {
-    return a.id - b.id
-  })
-  for (let i = 0; i < users.length; ++i){
-    leadersStatistics[i].valueText = 0
-  };
-  commits.forEach(commit =>{
-    if (commit.timestamp > currentSprintStart && commit.timestamp < currentSprintFinish) {
-      for (let i = 0; i < leadersStatistics.length; i++) {
-        if (leadersStatistics[i].id == commit.author) {
-          ++leadersStatistics[i].valueText
-          break
-        }
-      }
-    }
-  });
-
-*/
-
-
-/*
-  // Перенос пользователей в leaders по уменшению valueText
-
-  // добавлене юзерам количества лайков в likes 
-  users.forEach(user => {
-    user.likes = leadersStatistics[user.id]
-  })
-  // сортировка по лайкам
-  users.sort((userA, userB) => {
-    if (userB.likes - userA.likes > 0) {
-      return 1
-    } else {
-      return -1
-    }
-      // return userB.likes - userA.likes
-  })
-
-  // сбор users 
-  for (let i = 0; i < users.length; ++i){
-    let userToAdd = {"id": users[i].id, "name": users[i].name, "avatar": users[i].avatar, "valueText": users[i].likes.toString()};
-    leaders.data.users.push(userToAdd);
-  }
-*/
-
-  // Перенос пользователей в leaders по уменшению valueText
-
-  // Сортировка users по id, чтобы индекс в users соотносился с индексом в leadersStatistics
-
-  // for (let i = 0; i < users.length; ++i){
-  //   let maxValue = Math.max(...leadersStatistics);
-  //   let userId = leadersStatistics.indexOf(maxValue);
-  //   let userToAdd = {"id": users[userId - 1].id, "name": users[userId - 1].name, "avatar": users[userId - 1].avatar, "valueText": maxValue != undefined ? maxValue.toString() : ""};
-  //   leaders.data.users.push(JSON.parse(JSON.stringify(userToAdd)));
-  //   leadersStatistics[userId] = -1;
-  // };
-
-
-/*
-    leaders.data.users = JSON.parse(JSON.stringify(leadersStatistics));
-    leaders.data.users.forEach(user => {
-      delete user.friends
-      delete user.comments
-      delete user.commits
-      delete user.login
-      delete user.type
-      user.valueText = user.valueText.toString()
-    })
-    leaders.data.users.sort((userA, userB) => {
-      if (userA.valueText - userB.valueText == 0 ) {
-        return userA.id - userB.id
-      } else {
-        return +userB.valueText - +userA.valueText
-      }
-    })
-*/
-
   // каркас chart
   const chart = {
     "alias": "chart",
@@ -532,12 +451,6 @@ function prepareData(rawData, sprintObj) {
 
   // определение differenceNumber
   const differenceNumber = sprints[currentSprintIndex].commits - sprints[previousSprintIndex].commits
-  // console.log(sprints[currentSprintIndex].commits)
-  // console.log(sprints[currentSprintIndex].hugeCommits +
-  //   sprints[currentSprintIndex].bigCommits +
-  //   sprints[currentSprintIndex].smallCommits +
-  //   sprints[currentSprintIndex].tinyCommits
-  //   )
   const diagram = {
       "alias": "diagram",
       "data": {
