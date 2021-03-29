@@ -608,3 +608,4 @@ function prepareData(rawData, sprintObj) {
 
 };
 
+module.exports = { prepareData };
