@@ -283,7 +283,6 @@ function prepareData(rawData, sprintObj) {
     return false
   };
   // подсчёт количества коммитов в каждом спринте
-  /*
   commits.forEach(commit =>{
     sprints[binarySearch(commit)].commits += 1
   });
@@ -300,7 +299,6 @@ function prepareData(rawData, sprintObj) {
       break;
     }
   }
-  */
 
   // добавление users, копирование из leaders
   // chart.data.users = leaders.data.users.slice();
