@@ -133,7 +133,7 @@ function prepareData(rawData, sprintObj) {
   }) 
   leadersUsers.sort((userA, userB) => {
       if (userA.valueText - userB.valueText == 0 ) {
-        return userA.id - userB.id
+        return userB.id - userA.id
       } else {
         return +userB.valueText - +userA.valueText
       }
