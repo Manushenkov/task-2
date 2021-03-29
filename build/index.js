@@ -106,6 +106,45 @@ function prepareData(rawData, sprintObj) {
     "users": []
     }
   };
+  let border1
+  let border2
+  for (let i = 0; i < sprints.length; i++) {
+    if (sprintId == sprints[i].id) {
+      border1 = sprints[i].startAt
+      border2 = sprints[i].finishAt
+      break
+    }
+  }
+
+  let usersObj = {}
+  commits.forEach(commit => {
+    if (commit.timestamp <= border2) {
+      if (commit.timestamp >= border1) {
+        if (usersObj[commit.author] == undefined) {usersObj[commit.author] = 0}
+        usersObj[commit.author] += 1
+      }
+    }
+  })
+
+  let leadersUsers = []
+ 
+  users.forEach(user => {
+    leadersUsers.push({"id": user.id, "name": user.name, "avatar": user.avatar, "valueText": usersObj[user.id] != undefined ? `${usersObj[user.id]}` : "0"})
+  }) 
+  leadersUsers.sort((userA, userB) => {
+      if (userA.valueText - userB.valueText == 0 ) {
+        return userA.id - userB.id
+      } else {
+        return +userB.valueText - +userA.valueText
+      }
+    })
+ 
+
+  leaders.data.users = JSON.parse(JSON.stringify(leadersUsers))
+
+/*
+
+
   // Создание массива и присвоение ему valueText для leaders путём перебора массива с коммитами и проверок времени
   let leadersStatistics = JSON.parse(JSON.stringify(users));
   leadersStatistics.sort((a, b) => {
@@ -124,6 +163,9 @@ function prepareData(rawData, sprintObj) {
       }
     }
   });
+
+*/
+
 
 /*
   // Перенос пользователей в leaders по уменшению valueText
@@ -161,6 +203,8 @@ function prepareData(rawData, sprintObj) {
   //   leadersStatistics[userId] = -1;
   // };
 
+
+/*
     leaders.data.users = JSON.parse(JSON.stringify(leadersStatistics));
     leaders.data.users.forEach(user => {
       delete user.friends
@@ -177,6 +221,7 @@ function prepareData(rawData, sprintObj) {
         return +userB.valueText - +userA.valueText
       }
     })
+*/
 
   // каркас chart
   const chart = {
@@ -283,6 +328,8 @@ function prepareData(rawData, sprintObj) {
     return false
   };
   // подсчёт количества коммитов в каждом спринте
+  
+
   commits.forEach(commit =>{
     sprints[binarySearch(commit)].commits += 1
   });
@@ -299,11 +346,11 @@ function prepareData(rawData, sprintObj) {
       break;
     }
   }
+  
 
   // добавление users, копирование из leaders
   // chart.data.users = leaders.data.users.slice();
   chart.data.users = JSON.parse(JSON.stringify(leaders.data.users));
-
   // Начало зоны 4 подзадания
   
   // добавление счётчиков коммитов для текущего и предыдущего спринтов
@@ -561,4 +608,3 @@ function prepareData(rawData, sprintObj) {
 
 };
 
-module.exports = { prepareData };
