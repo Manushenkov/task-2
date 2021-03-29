@@ -129,11 +129,13 @@ function prepareData(rawData, sprintObj) {
   let leadersUsers = []
  
   users.forEach(user => {
-    leadersUsers.push({"id": user.id, "name": user.name, "avatar": user.avatar, "valueText": usersObj[user.id] != undefined ? `${usersObj[user.id]}` : "0"})
-  }) 
+    if (usersObj[user.id] != undefined) {
+      leadersUsers.push({"id": user.id, "name": user.name, "avatar": user.avatar, "valueText": `${usersObj[user.id]}`})
+    }
+    }) 
   leadersUsers.sort((userA, userB) => {
       if (userA.valueText - userB.valueText == 0 ) {
-        return userB.id - userA.id
+        return userA.id - userB.id
       } else {
         return +userB.valueText - +userA.valueText
       }
