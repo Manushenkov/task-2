@@ -1,3 +1,4 @@
+
 function prepareData(rawData, sprintObj) {
   try {
   // Присвоение id константе
@@ -115,7 +116,7 @@ function prepareData(rawData, sprintObj) {
     leadersStatistics[i].valueText = 0
   };
   commits.forEach(commit =>{
-    if (commit.timestamp >= currentSprintStart && commit.timestamp <= currentSprintFinish) {
+    if (commit.timestamp > currentSprintStart && commit.timestamp < currentSprintFinish) {
       ++leadersStatistics[commit.author - 1].valueText
     }
   });
