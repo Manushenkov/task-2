@@ -1,4 +1,3 @@
-
 function prepareData(rawData, sprintObj) {
   try {
   // Присвоение id константе
@@ -117,7 +116,12 @@ function prepareData(rawData, sprintObj) {
   };
   commits.forEach(commit =>{
     if (commit.timestamp > currentSprintStart && commit.timestamp < currentSprintFinish) {
-      ++leadersStatistics[commit.author - 1].valueText
+      for (let i = 0; i < leadersStatistics.length; i++) {
+        if (leadersStatistics[i].id == commit.author) {
+          ++leadersStatistics[i].valueText
+          break
+        }
+      }
     }
   });
 
@@ -279,6 +283,7 @@ function prepareData(rawData, sprintObj) {
     return false
   };
   // подсчёт количества коммитов в каждом спринте
+  /*
   commits.forEach(commit =>{
     sprints[binarySearch(commit)].commits += 1
   });
@@ -295,6 +300,7 @@ function prepareData(rawData, sprintObj) {
       break;
     }
   }
+  */
 
   // добавление users, копирование из leaders
   // chart.data.users = leaders.data.users.slice();
